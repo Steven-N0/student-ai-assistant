@@ -35,9 +35,7 @@ def generate_ai_answer(
     client = OpenAI(api_key=api_key)
 
 
-    # --------------------------------------------------
-    # EXAMPLE INSTRUCTION
-    # --------------------------------------------------
+
 
     if include_example:
         example_instruction = (
@@ -50,9 +48,7 @@ def generate_ai_answer(
         )
 
 
-    # --------------------------------------------------
-    # ASSISTANT INSTRUCTIONS
-    # --------------------------------------------------
+
 
     instructions = f"""
 You are an AI study assistant for university students.
@@ -75,18 +71,14 @@ Follow these rules:
 """
 
 
-    # --------------------------------------------------
-    # CONVERSATION HISTORY
-    # --------------------------------------------------
+
 
     recent_history = conversation_history[-10:]
 
     input_messages = recent_history.copy()
 
 
-    # --------------------------------------------------
-    # PDF CONTEXT
-    # --------------------------------------------------
+
 
     if context:
         input_messages.append(
@@ -102,9 +94,7 @@ Follow these rules:
         )
 
 
-    # --------------------------------------------------
-    # CURRENT QUESTION
-    # --------------------------------------------------
+
 
     input_messages.append(
         {
@@ -114,9 +104,7 @@ Follow these rules:
     )
 
 
-    # --------------------------------------------------
-    # OPENAI REQUEST
-    # --------------------------------------------------
+
 
     response = client.responses.create(
         model=model,
@@ -125,9 +113,7 @@ Follow these rules:
     )
 
 
-    # --------------------------------------------------
-    # EXTRACT ANSWER
-    # --------------------------------------------------
+
 
     answer = response.output_text.strip()
 

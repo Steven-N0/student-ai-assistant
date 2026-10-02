@@ -11,10 +11,6 @@ from pdf_service import (
 from ai_service import generate_ai_answer
 
 
-# --------------------------------------------------
-# PAGE CONFIGURATION
-# --------------------------------------------------
-
 st.set_page_config(
     page_title="Student AI Assistant",
     page_icon="🎓",
@@ -22,17 +18,12 @@ st.set_page_config(
 )
 
 
-# --------------------------------------------------
-# API SETTINGS
-# --------------------------------------------------
 
 api_key = st.secrets["OPENAI_API_KEY"]
 model_name = st.secrets["OPENAI_MODEL"]
 
 
-# --------------------------------------------------
-# SESSION STATE INITIALIZATION
-# --------------------------------------------------
+
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -44,9 +35,6 @@ if "document_chunks" not in st.session_state:
     st.session_state.document_chunks = []
 
 
-# --------------------------------------------------
-# PAGE HEADER
-# --------------------------------------------------
 
 st.title("Student AI Assistant")
 
@@ -58,9 +46,7 @@ st.write(
 st.divider()
 
 
-# --------------------------------------------------
-# COURSE OPTIONS
-# --------------------------------------------------
+
 
 courses = [
     "Operating Systems",
@@ -70,9 +56,7 @@ courses = [
 ]
 
 
-# --------------------------------------------------
-# PDF UPLOAD
-# --------------------------------------------------
+
 
 st.subheader("Course document")
 
@@ -91,32 +75,26 @@ if uploaded_pdf is not None:
         else None
     )
 
-    # Only process the PDF if it is a new file
     if uploaded_pdf.name != current_document_name:
 
         try:
             with st.spinner("Reading and processing PDF..."):
 
-                # Extract text from the PDF
                 pdf_data = extract_pdf_text(uploaded_pdf)
 
-                # Split the pages into overlapping chunks
                 chunks = chunk_pages(
                     pdf_data["pages"],
                     1000,
                     200,
                 )
 
-                # Generate an embedding for every chunk
                 embedded_chunks = add_embeddings_to_chunks(
                     chunks,
                     api_key,
                 )
 
-                # Store chunks so they survive Streamlit reruns
                 st.session_state.document_chunks = embedded_chunks
 
-                # Store information about the uploaded document
                 st.session_state.document = {
                     "name": uploaded_pdf.name,
                     "full_text": pdf_data["full_text"],
@@ -128,16 +106,13 @@ if uploaded_pdf is not None:
 
         except Exception as error:
 
-            # Remove incomplete document data if processing failed
             st.session_state.document = None
             st.session_state.document_chunks = []
 
             st.error(f"Could not process the PDF: {error}")
 
 
-# --------------------------------------------------
-# DISPLAY CURRENT DOCUMENT
-# --------------------------------------------------
+
 
 if st.session_state.document:
 
@@ -172,9 +147,7 @@ if st.session_state.document:
         st.rerun()
 
 
-# --------------------------------------------------
-# QUESTION FORM
-# --------------------------------------------------
+
 
 with st.form("question_form"):
 
@@ -210,9 +183,7 @@ with st.form("question_form"):
     )
 
 
-# --------------------------------------------------
-# CONVERSATION DISPLAY
-# --------------------------------------------------
+
 
 st.divider()
 st.subheader("Conversation")
@@ -233,9 +204,7 @@ else:
             st.write(message["content"])
 
 
-# --------------------------------------------------
-# CLEAR CONVERSATION
-# --------------------------------------------------
+
 
 if st.session_state.messages:
 
@@ -249,9 +218,7 @@ if st.session_state.messages:
         st.rerun()
 
 
-# --------------------------------------------------
-# PROCESS QUESTION
-# --------------------------------------------------
+
 
 if submit_button:
 
@@ -266,10 +233,8 @@ if submit_button:
 
         with st.spinner("Generating an answer..."):
 
-            # Default: no PDF context
             context = ""
 
-            # If a PDF exists, retrieve the most relevant chunks
             if st.session_state.document_chunks:
 
                 best_chunks = find_relevant_chunks(
@@ -283,7 +248,6 @@ if submit_button:
                     best_chunks
                 )
 
-            # Ask the AI
             answer = generate_ai_answer(
                 api_key=api_key,
                 model=model_name,
@@ -296,7 +260,6 @@ if submit_button:
             )
 
 
-        # Save user's question
         st.session_state.messages.append(
             {
                 "role": "user",
@@ -305,7 +268,6 @@ if submit_button:
         )
 
 
-        # Save assistant answer
         st.session_state.messages.append(
             {
                 "role": "assistant",
@@ -314,7 +276,6 @@ if submit_button:
         )
 
 
-        # Rerun so the new messages appear
         st.rerun()
 
 

@@ -3,9 +3,6 @@ from openai import OpenAI
 import math
 
 
-# --------------------------------------------------
-# PDF TEXT EXTRACTION
-# --------------------------------------------------
 
 def extract_pdf_text(pdf_file) -> dict:
     reader = PdfReader(pdf_file)
@@ -44,9 +41,7 @@ def extract_pdf_text(pdf_file) -> dict:
     }
 
 
-# --------------------------------------------------
-# TEXT CHUNKING
-# --------------------------------------------------
+
 
 def chunk_text(
     text,
@@ -84,9 +79,7 @@ def chunk_text(
     return chunks
 
 
-# --------------------------------------------------
-# CHUNK ALL PDF PAGES
-# --------------------------------------------------
+
 
 def chunk_pages(
     pages,
@@ -120,9 +113,7 @@ def chunk_pages(
     return chunks
 
 
-# --------------------------------------------------
-# CREATE ONE EMBEDDING
-# --------------------------------------------------
+
 
 def get_embedding(
     text,
@@ -140,9 +131,7 @@ def get_embedding(
     return response.data[0].embedding
 
 
-# --------------------------------------------------
-# ADD EMBEDDINGS TO PDF CHUNKS
-# --------------------------------------------------
+
 
 def add_embeddings_to_chunks(
     chunks,
@@ -157,9 +146,7 @@ def add_embeddings_to_chunks(
     return chunks
 
 
-# --------------------------------------------------
-# COSINE SIMILARITY
-# --------------------------------------------------
+
 
 def cosine_similarity(
     vector_a,
@@ -196,9 +183,7 @@ def cosine_similarity(
     )
 
 
-# --------------------------------------------------
-# FIND MOST RELEVANT PDF CHUNKS
-# --------------------------------------------------
+
 
 def find_relevant_chunks(
     question,
@@ -237,9 +222,7 @@ def find_relevant_chunks(
     return scored_chunks[:top_k]
 
 
-# --------------------------------------------------
-# BUILD CONTEXT FOR THE AI
-# --------------------------------------------------
+
 
 def build_context(best_chunks):
     context_parts = []
